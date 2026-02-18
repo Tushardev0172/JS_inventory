@@ -1,6 +1,6 @@
-# PackTrack — Disposables & Packaging Inventory
+# JS - Inventory
 
-A full-stack inventory app built for **disposables & packaging shops** (paper plates, carry bags, cups, tissue, foil containers, etc.)
+A full-stack inventory app built for **disposables & packaging shops** (paper plates, carry bags, cups, tissue etc.)
 
 ## Built With
 - **Backend**: Node.js + Express + Mongoose
@@ -16,11 +16,7 @@ A full-stack inventory app built for **disposables & packaging shops** (paper pl
 | 🛍 | Carry Bags |
 | 🥤 | Cups & Glasses |
 | 🧻 | Tissue & Napkins |
-| 🫙 | Foil Containers |
-| 🥢 | Straws & Stirrers |
-| 📫 | Boxes & Trays |
-| 📜 | Cling Wrap & Foil |
-| 🧤 | Gloves & Covers |
+| 📫 | Boxes |
 | 🏷 | Other |
 
 ## Item Fields
@@ -44,9 +40,8 @@ A full-stack inventory app built for **disposables & packaging shops** (paper pl
 - ✅ Filter by category (sidebar)
 - ✅ Search by product name
 - ✅ Table view & Grid view toggle
-- ✅ Dashboard: total stock value, sell value, potential profit, low-stock count
+- ✅ Dashboard: total stock value, low-stock count
 - ✅ Low-stock alerts with visual indicators
-- ✅ Profit margin calculation per item
 - ✅ Export inventory to CSV
 
 ---
