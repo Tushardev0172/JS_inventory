@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JS - Inventory</title>
+  <title>Jagdish Sweets — Inventory</title>
+  <link rel="icon" type="image/jpeg" href="/shop_logo.jpeg" />
+  <link rel="apple-touch-icon" href="/shop_logo.jpeg" />
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet" />
@@ -1175,8 +1177,9 @@
   <!-- TOP BAR -->
   <nav class="topbar">
     <div class="logo">
-      <div class="logo-icon">🛍</div>
-      JS<span style="color:#6ee7b7">Inventory</span>
+      <img src="/shop_logo.jpeg" alt="Jagdish Sweets"
+        style="width:32px;height:32px;border-radius:6px;object-fit:cover;" />
+      Jagdish <span style="color:#6ee7b7">Sweets</span>
     </div>
     <div class="topbar-right">
       <span class="topbar-hint" id="topbarDate"></span>
@@ -1187,7 +1190,8 @@
   <!-- MOBILE SEARCH BAR (shown only on mobile) -->
   <div class="mobile-search-bar">
     <div class="search-wrap">
-      <input class="search-input" id="mobileSearchInput" type="text" placeholder="🔍Search products…"
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="mobileSearchInput" type="text" placeholder="Search products…"
         oninput="onMobileSearch()" />
     </div>
   </div>
@@ -1218,7 +1222,8 @@
     <aside class="sidebar">
       <div class="sidebar-section">
         <div class="search-wrap">
-          <input class="search-input" id="searchInput" type="text" placeholder="🔍Search products…"
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="searchInput" type="text" placeholder="Search products…"
             oninput="onSearch()" />
         </div>
       </div>
