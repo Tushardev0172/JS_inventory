@@ -106,6 +106,16 @@
       padding: 1rem 1.5rem;
     }
 
+    #low-stock-stat:hover {
+      background: var(--red-l);
+      transition: background 0.15s;
+    }
+
+    #total-stat:hover {
+      background: var(--accent-l);
+      transition: background 0.15s;
+    }
+
     .stat-label {
       font-size: 0.68rem;
       text-transform: uppercase;
@@ -175,19 +185,9 @@
       margin-bottom: 1.25rem;
     }
 
-    .search-icon {
-      position: absolute;
-      left: 0.6rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--ink3);
-      font-size: 0.85rem;
-      pointer-events: none;
-    }
-
     .search-input {
       width: 100%;
-      padding: 0.55rem 0.75rem 0.55rem 2rem;
+      padding: 0.55rem 0.75rem;
       border: 1px solid var(--border);
       background: var(--card);
       color: var(--ink);
@@ -862,6 +862,40 @@
       background: var(--accent);
     }
 
+    /* ── STOCK MODAL ─────────────────────────────────── */
+    .stock-modal {
+      max-width: 420px;
+    }
+
+    @media (max-width: 820px) {
+      .stock-modal {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: 20px 20px 0 0;
+        overflow-y: auto;
+        animation: slideUpSheet 0.3s cubic-bezier(.4, 0, .2, 1);
+      }
+
+      #stockOverlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+    }
+
+    @keyframes slideUpSheet {
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
+    }
+
     /* ── MOBILE BOTTOM NAV ───────────────────────────── */
     .bottom-nav {
       display: none;
@@ -1190,23 +1224,23 @@
   <!-- MOBILE SEARCH BAR (shown only on mobile) -->
   <div class="mobile-search-bar">
     <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input class="search-input" id="mobileSearchInput" type="text" placeholder="Search products…"
-        oninput="onMobileSearch()" />
+      <input class="search-input" id="mobileSearchInput" type="text" placeholder="🔍 Search products…"
+        oninput="onMobileSearch();" />
     </div>
   </div>
 
   <!-- STATS ROW -->
   <div class="stats-row" style="grid-template-columns: repeat(3, 1fr);">
-    <div class="stat">
+    <div class="stat" id="total-stat" onclick="showAllItems()" style="cursor:pointer;" title="Click to view all items">
       <div class="stat-label">Total Products</div>
       <div class="stat-val" id="s-total">—</div>
-      <div class="stat-sub">SKUs in inventory</div>
+      <div class="stat-sub">click to view all ↗</div>
     </div>
-    <div class="stat">
+    <div class="stat" id="low-stock-stat" onclick="filterLowStock()" style="cursor:pointer;"
+      title="Click to view low stock items">
       <div class="stat-label">Low Stock Alerts</div>
       <div class="stat-val red" id="s-low">—</div>
-      <div class="stat-sub">need restocking</div>
+      <div class="stat-sub">click to view ↗</div>
     </div>
     <div class="stat">
       <div class="stat-label">Categories</div>
@@ -1222,9 +1256,8 @@
     <aside class="sidebar">
       <div class="sidebar-section">
         <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input class="search-input" id="searchInput" type="text" placeholder="Search products…"
-            oninput="onSearch()" />
+          <input class="search-input" id="searchInput" type="text" placeholder="🔍 Search products…"
+            oninput="onSearch();" />
         </div>
       </div>
 
@@ -1325,10 +1358,6 @@
               <input type="text" id="f-size" placeholder="e.g. 8 inch, 500ml, 30×40cm" />
             </div>
             <div class="form-group">
-              <label>Material</label>
-              <input type="text" id="f-material" placeholder="e.g. Paper, LDPE, Aluminium" />
-            </div>
-            <div class="form-group">
               <label>Supplier</label>
               <input type="text" id="f-supplier" placeholder="Supplier / Brand name" />
             </div>
@@ -1364,12 +1393,6 @@
             </div>
           </div>
 
-          <div class="section-divider">Notes</div>
-          <div class="form-group">
-            <label>Additional Notes</label>
-            <textarea id="f-notes" placeholder="e.g. Biodegradable, GST applicable, seasonal item…"></textarea>
-          </div>
-
         </form>
       </div>
       <div class="modal-foot">
@@ -1382,14 +1405,15 @@
 
   <!-- ── STOCK ADJUSTMENT MODAL ─────────────────────────── -->
   <div class="overlay" id="stockOverlay">
-    <div class="modal" style="max-width:400px;">
-      <div class="modal-head">
+    <div class="modal stock-modal">
+      <div class="drawer-handle" style="margin-bottom:0.75rem;"></div>
+      <div class="modal-head" style="padding-top:0;">
         <span class="modal-title">Adjust Stock</span>
         <button class="modal-close" onclick="closeStock()">✕</button>
       </div>
       <div class="modal-body">
         <div id="stockItemName" style="font-weight:700;font-size:1rem;margin-bottom:0.25rem;"></div>
-        <div id="stockItemMeta" style="font-size:0.78rem;color:var(--ink2);margin-bottom:1.5rem;"></div>
+        <div id="stockItemMeta" style="font-size:0.78rem;color:var(--ink2);margin-bottom:1.25rem;"></div>
 
         <!-- Current qty display -->
         <div
@@ -1397,7 +1421,7 @@
           <div
             style="font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--ink3);margin-bottom:0.25rem;">
             Current Stock</div>
-          <div style="font-size:2rem;font-weight:700;font-family:'JetBrains Mono',monospace;" id="stockCurrentQty">—
+          <div style="font-size:2.5rem;font-weight:700;font-family:'JetBrains Mono',monospace;" id="stockCurrentQty">—
           </div>
           <div style="font-size:0.75rem;color:var(--ink2);" id="stockUnitLabel">units</div>
         </div>
@@ -1408,17 +1432,23 @@
             style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--ink3);margin-bottom:0.6rem;">
             Quick Adjust</div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;">
-            <button class="btn btn-outline" style="justify-content:center;color:var(--red);border-color:#fca5a5;"
+            <button class="btn btn-outline"
+              style="justify-content:center;color:var(--red);border-color:#fca5a5;padding:0.65rem;"
               onclick="quickAdjust(-1)">− 1</button>
-            <button class="btn btn-outline" style="justify-content:center;color:var(--red);border-color:#fca5a5;"
+            <button class="btn btn-outline"
+              style="justify-content:center;color:var(--red);border-color:#fca5a5;padding:0.65rem;"
               onclick="quickAdjust(-5)">− 5</button>
-            <button class="btn btn-outline" style="justify-content:center;color:var(--red);border-color:#fca5a5;"
+            <button class="btn btn-outline"
+              style="justify-content:center;color:var(--red);border-color:#fca5a5;padding:0.65rem;"
               onclick="quickAdjust(-10)">− 10</button>
-            <button class="btn btn-outline" style="justify-content:center;color:var(--accent);border-color:#6ee7b7;"
+            <button class="btn btn-outline"
+              style="justify-content:center;color:var(--accent);border-color:#6ee7b7;padding:0.65rem;"
               onclick="quickAdjust(1)">+ 1</button>
-            <button class="btn btn-outline" style="justify-content:center;color:var(--accent);border-color:#6ee7b7;"
+            <button class="btn btn-outline"
+              style="justify-content:center;color:var(--accent);border-color:#6ee7b7;padding:0.65rem;"
               onclick="quickAdjust(5)">+ 5</button>
-            <button class="btn btn-outline" style="justify-content:center;color:var(--accent);border-color:#6ee7b7;"
+            <button class="btn btn-outline"
+              style="justify-content:center;color:var(--accent);border-color:#6ee7b7;padding:0.65rem;"
               onclick="quickAdjust(10)">+ 10</button>
           </div>
         </div>
@@ -1429,17 +1459,18 @@
             style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--ink3);margin-bottom:0.6rem;">
             Custom Amount</div>
           <div style="display:flex;gap:0.5rem;">
-            <button class="btn btn-outline" style="color:var(--red);border-color:#fca5a5;padding:0.5rem 0.9rem;"
+            <button class="btn btn-outline" style="color:var(--red);border-color:#fca5a5;padding:0.65rem 0.9rem;"
               onclick="applyCustom(-1)">− Remove</button>
             <input type="number" id="stockCustom" min="1" value="1" placeholder="qty"
-              style="flex:1;text-align:center;font-size:1rem;font-weight:600;" />
-            <button class="btn btn-outline" style="color:var(--accent);border-color:#6ee7b7;padding:0.5rem 0.9rem;"
+              style="flex:1;text-align:center;font-size:1.1rem;font-weight:600;" />
+            <button class="btn btn-outline" style="color:var(--accent);border-color:#6ee7b7;padding:0.65rem 0.9rem;"
               onclick="applyCustom(1)">+ Add</button>
           </div>
         </div>
 
         <!-- Set exact -->
-        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+        <div
+          style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);">
           <div
             style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--ink3);margin-bottom:0.6rem;">
             Set Exact Quantity</div>
@@ -1575,6 +1606,64 @@
 
     async function refresh() {
       await Promise.all([loadItems(), loadStats(), loadAll()]);
+    }
+
+    // ── Show All Items ─────────────────────────────────────────────────────
+    function showAllItems() {
+      currentCat = 'All';
+      currentSearch = '';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.cat-btn[data-cat="All"]').classList.add('active');
+      document.querySelectorAll('.drawer-cat-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.drawer-cat-btn').classList.add('active');
+      document.getElementById('pageTitle').textContent = 'All Items';
+      const clearBtn = document.getElementById('clearLowStock');
+      if (clearBtn) clearBtn.remove();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      loadItems();
+    }
+
+    // ── Low Stock Filter ───────────────────────────────────────────────────
+    function filterLowStock() {
+      // Reset category to All
+      currentCat = 'All';
+      currentSearch = '';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('mobileSearchInput').value = '';
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.cat-btn[data-cat="All"]').classList.add('active');
+      document.querySelectorAll('.drawer-cat-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.drawer-cat-btn').classList.add('active');
+
+      // Filter items client-side to show only low stock
+      const lowItems = items.filter(i => i.quantity <= i.threshold);
+
+      // Temporarily override items for render
+      const _items = items;
+      items = lowItems;
+      document.getElementById('pageTitle').textContent = '⚠ Low Stock Items';
+      document.getElementById('itemCount').textContent = `${lowItems.length} item${lowItems.length !== 1 ? 's' : ''}`;
+      renderView();
+      items = _items;
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Show a reset button in the content header
+      if (!document.getElementById('clearLowStock')) {
+        const btn = document.createElement('button');
+        btn.id = 'clearLowStock';
+        btn.className = 'btn btn-ghost btn-sm';
+        btn.textContent = '✕ Clear Filter';
+        btn.onclick = () => {
+          btn.remove();
+          document.getElementById('pageTitle').textContent = 'All Items';
+          loadItems();
+        };
+        document.querySelector('.content-header .header-right').prepend(btn);
+      }
     }
 
     // ── Category Filter ────────────────────────────────────────────────────
@@ -1727,6 +1816,10 @@
     }
 
     // ── Modal: Add ─────────────────────────────────────────────────────────
+    // ── Scroll Lock ─────────────────────────────────────────────────────────
+    function lockScroll() { document.body.style.overflow = 'hidden'; }
+    function unlockScroll() { document.body.style.overflow = ''; }
+
     function openAdd() {
       editingId = null;
       document.getElementById('modalTitle').textContent = 'Add Product';
@@ -1735,6 +1828,7 @@
       document.getElementById('f-pcsPerUnit').value = 1;
       document.getElementById('f-threshold').value = 10;
       document.getElementById('itemOverlay').classList.add('open');
+      lockScroll();
     }
 
     // ── Modal: Edit ────────────────────────────────────────────────────────
@@ -1748,19 +1842,21 @@
       document.getElementById('f-name').value = item.name;
       document.getElementById('f-category').value = item.category;
       document.getElementById('f-size').value = item.size || '';
-      document.getElementById('f-material').value = item.material || '';
+
       document.getElementById('f-supplier').value = item.supplier || '';
       document.getElementById('f-unitType').value = item.unitType;
       document.getElementById('f-pcsPerUnit').value = item.pcsPerUnit;
       document.getElementById('f-quantity').value = item.quantity;
       document.getElementById('f-threshold').value = item.threshold;
-      document.getElementById('f-notes').value = item.notes || '';
+
 
       document.getElementById('itemOverlay').classList.add('open');
+      lockScroll();
     }
 
     function closeModal() {
       document.getElementById('itemOverlay').classList.remove('open');
+      unlockScroll();
     }
 
     // ── Form Submit ────────────────────────────────────────────────────────
@@ -1770,14 +1866,11 @@
         name: document.getElementById('f-name').value.trim(),
         category: document.getElementById('f-category').value,
         size: document.getElementById('f-size').value.trim(),
-        material: document.getElementById('f-material').value.trim(),
         supplier: document.getElementById('f-supplier').value.trim(),
         unitType: document.getElementById('f-unitType').value,
         pcsPerUnit: Number(document.getElementById('f-pcsPerUnit').value) || 1,
         quantity: Number(document.getElementById('f-quantity').value),
         threshold: Number(document.getElementById('f-threshold').value) || 10,
-
-        notes: document.getElementById('f-notes').value.trim(),
       };
       try {
         if (editingId) {
@@ -1806,11 +1899,13 @@
       document.getElementById('stockCustom').value = 1;
       document.getElementById('stockExact').value = '';
       document.getElementById('stockOverlay').classList.add('open');
+      lockScroll();
     }
 
     function closeStock() {
       document.getElementById('stockOverlay').classList.remove('open');
       stockItem = null;
+      unlockScroll();
     }
 
     async function updateQty(newQty) {
@@ -1854,10 +1949,12 @@
     function openConfirm(id) {
       deletingId = id;
       document.getElementById('confirmOverlay').classList.add('open');
+      lockScroll();
     }
     function closeConfirm() {
       document.getElementById('confirmOverlay').classList.remove('open');
       deletingId = null;
+      unlockScroll();
     }
     async function doDelete() {
       if (!deletingId) return;
@@ -1872,11 +1969,11 @@
     // ── Export CSV ─────────────────────────────────────────────────────────
     function exportCSV() {
       if (!allItems.length) { toast('No items to export', 'error'); return; }
-      const headers = ['Name', 'Category', 'Size', 'Material', 'Unit Type', 'Pcs/Unit', 'Quantity', 'Supplier', 'Low Stock Threshold', 'Notes'];
+      const headers = ['Name', 'Category', 'Size', 'Unit Type', 'Pcs/Unit', 'Quantity', 'Supplier', 'Low Stock Threshold'];
       const rows = allItems.map(i => [
-        `"${i.name}"`, `"${i.category}"`, `"${i.size || ''}"`, `"${i.material || ''}"`,
+        `"${i.name}"`, `"${i.category}"`, `"${i.size || ''}"`,
         i.unitType, i.pcsPerUnit, i.quantity,
-        `"${i.supplier || ''}"`, i.threshold, `"${i.notes || ''}"`
+        `"${i.supplier || ''}"`, i.threshold
       ]);
       const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
       const blob = new Blob([csv], { type: 'text/csv' });
